@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.36
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kkts.Template", "Kkts.Template\Kkts.Template.csproj", "{8145D0BA-347A-44AA-BC0E-BB4D1A305C19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kkts.Template.UnitTest", "Kkts.Template.UnitTest\Kkts.Template.UnitTest.csproj", "{1E5CEAFD-3E75-432D-A3FA-F71881DC76E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8145D0BA-347A-44AA-BC0E-BB4D1A305C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8145D0BA-347A-44AA-BC0E-BB4D1A305C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8145D0BA-347A-44AA-BC0E-BB4D1A305C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8145D0BA-347A-44AA-BC0E-BB4D1A305C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5CEAFD-3E75-432D-A3FA-F71881DC76E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5CEAFD-3E75-432D-A3FA-F71881DC76E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5CEAFD-3E75-432D-A3FA-F71881DC76E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5CEAFD-3E75-432D-A3FA-F71881DC76E2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {786796FF-B582-4118-9B22-86A35DC1A7C4}
+	EndGlobalSection
+EndGlobal

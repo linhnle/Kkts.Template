@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Authors>Linh Le</Authors>
+    <Company>KKTS Ltd.</Company>
+    <Product>Template</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/linhnle/Kkts.Template</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/linhnle/Kkts.Template.git</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Template</PackageTags>
+  </PropertyGroup>
+
+</Project>

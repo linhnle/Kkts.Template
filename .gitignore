@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/.vs/Kkts/v16
+/src/Kkts.Template/bin/Debug/netcoreapp2.0
+/src/Kkts.Template/obj
+/src/Kkts.Template.UnitTest/bin/Debug/netcoreapp3.1
+/src/Kkts.Template.UnitTest/obj
