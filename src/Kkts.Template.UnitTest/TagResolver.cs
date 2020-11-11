@@ -1,25 +1,26 @@
 ﻿using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Kkts.Template.UnitTest
 {
     class TagResolver : ITagResolver
     {
-        public object Resolve(string tagName, CultureInfo cultureInfo)
+        public Task<object> ResolveAsync(string tagName, CultureInfo cultureInfo)
         {
             switch (tagName.ToLower())
             {
                 case "title":
-                    return "Sample";
+                    return Task.FromResult<object>("Sample");
                 case "des":
-                    return "this is flyweight template";
+                    return Task.FromResult<object>("this is flyweight template");
                 case "label":
-                    return "Contry:";
+                    return Task.FromResult<object>("Contry:");
                 case "contries":
-                    return new[] { "Vietnam", "Japan", "Korea" };
+                    return Task.FromResult<object>(new[] { "Vietnam", "Japan", "Korea" });
                 case "cities":
-                    return new[] { new Data { Id = 1, Name = "HCM" }, new Data { Id = 2, Name = "Hanoi" }, new Data { Id = 3, Name = "Danang" } };
+                    return Task.FromResult<object>(new[] { new Data { Id = 1, Name = "HCM" }, new Data { Id = 2, Name = "Hanoi" }, new Data { Id = 3, Name = "Danang" } });
                 default:
-                    return string.Empty;
+                    return Task.FromResult<object>(string.Empty);
             }
         }
     }

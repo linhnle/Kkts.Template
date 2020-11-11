@@ -29,11 +29,11 @@ namespace Kkts.Template.UnitTest
 </table>";
 
         [Fact]
-        public void Resolve_Success()
+        public async void Resolve_Success()
         {
             var tmpl = TemplateEngine.Parse(Template);
             var engine = new TemplateEngine(new TagResolver());
-            var result = engine.Resolve(tmpl);
+            var result = await engine.ResolveAsync(tmpl);
             Assert.Equal(ExpectedResult, result);
         }
     }

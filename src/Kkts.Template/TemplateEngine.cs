@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Kkts.Template
 {
@@ -32,11 +33,11 @@ namespace Kkts.Template
             return new Template { Nodes = nodes };
         }
 
-        public string Resolve(Template template, CultureInfo cultureInfo = null)
+        public Task<string> ResolveAsync(Template template, CultureInfo cultureInfo = null)
         {
             if (template == null) throw new ArgumentNullException(nameof(template));
 
-            return ResolveTags(template.Nodes, 0, null, cultureInfo ?? CultureInfo.CurrentCulture);
+            return ResolveTagsAsync(template.Nodes, 0, null, cultureInfo ?? CultureInfo.CurrentCulture);
         }
 
         private static List<TemplateNode> ParseNodes(string content)
@@ -66,59 +67,62 @@ namespace Kkts.Template
             return result;
         }
 
-        private string ResolveTags(List<TemplateNode> nodes, int index, object dataItem, CultureInfo cultureInfo)
+        private async Task<string> ResolveTagsAsync(List<TemplateNode> nodes, int index, object dataItem, CultureInfo cultureInfo)
         {
             var builder = new StringBuilder();
+            var cache = new Dictionary<string, object>();
+            object value;
             foreach (var node in nodes)
             {
                 if (node is TagNode tagNode)
                 {
-                    if (tagNode.Text.Equals(IndexTagName, StringComparison.InvariantCultureIgnoreCase))
+                    if (tagNode.Text.Equals(IndexTagName, StringComparison.OrdinalIgnoreCase))
                     {
                         builder.Append(index);
                         continue;
                     }
 
-                    if (tagNode.Text.Equals(OrderTagName, StringComparison.InvariantCultureIgnoreCase))
+                    if (tagNode.Text.Equals(OrderTagName, StringComparison.OrdinalIgnoreCase))
                     {
                         builder.Append(index + 1);
                         continue;
                     }
 
-                    if (ItemTagName.Equals(tagNode.Text, StringComparison.InvariantCultureIgnoreCase))
+                    if (ItemTagName.Equals(tagNode.Text, StringComparison.OrdinalIgnoreCase))
                     {
                         if (dataItem is null) continue;
                         builder.Append(Convert.ToString(dataItem, cultureInfo));
                         continue;
                     }
 
-                    if (tagNode.Text.StartsWith(ItemTagNamePrefix, StringComparison.InvariantCultureIgnoreCase))
+                    if (tagNode.Text.StartsWith(ItemTagNamePrefix, StringComparison.OrdinalIgnoreCase))
                     {
                         if (dataItem is null) continue;
-                        var value = Resolve(tagNode.Text.Substring(ItemTagNamePrefix.Length), dataItem, cultureInfo);
+                        value = Resolve(tagNode.Text.Substring(ItemTagNamePrefix.Length), dataItem, cultureInfo);
                         builder.Append(value);
                         continue;
                     }
 
-                    builder.Append(_resolver.Resolve(tagNode.Text, cultureInfo));
+                    value = await ResolveAsync(tagNode.Text, cache, cultureInfo);
+                    builder.Append(value);
                 }
                 else if (node is NestedExpressionNode nestedNode)
                 {
                     if (nestedNode.NestedTagNode != null)
                     {
-                        var data = _resolver.Resolve(nestedNode.NestedTagNode.Text, cultureInfo);
-                        if (data is IEnumerable collection)
+                        value = await ResolveAsync(nestedNode.NestedTagNode.Text, cache, cultureInfo);
+                        if (value is IEnumerable collection)
                         {
                             var i = 0;
                             foreach (var item in collection)
                             {
-                                builder.Append(ResolveTags(nestedNode.NestedNodes, i++, item, cultureInfo));
+                                builder.Append(await ResolveTagsAsync(nestedNode.NestedNodes, i++, item, cultureInfo));
                             }
                         }
                     }
                     else
                     {
-                        builder.Append(ResolveTags(nestedNode.NestedNodes, 0, null, cultureInfo));
+                        builder.Append(await ResolveTagsAsync(nestedNode.NestedNodes, 0, null, cultureInfo));
                     }
                 }
                 else
@@ -128,6 +132,17 @@ namespace Kkts.Template
             }
 
             return builder.ToString();
+        }
+
+        private async Task<object> ResolveAsync(string tagName, IDictionary<string, object> cache, CultureInfo cultureInfo)
+        {
+            if (!cache.TryGetValue(tagName, out var value))
+            {
+                value = await _resolver.ResolveAsync(tagName, cultureInfo);
+                cache[tagName] = value;
+            }
+
+            return value;
         }
 
         private string Resolve(string tagName, object dataItem, CultureInfo cultureInfo)
