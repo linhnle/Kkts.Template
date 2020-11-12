@@ -31,11 +31,11 @@ var result = await engine.ResolveAsync(tmpl);
 ```
 |Description|Template|Resolved|Note|
 |-------------------|-----------------------------------|-----------------------------------|----------------|
-|Tag name|<h1>{title}</h1>|<h1>Kk.Template</h1>| title is a tag that is resolved as 'Kk.Template'|
-|Escap curly brackets|<h1>{{title}</h1>|<h1>{title}</h1>| title is not a tag, "{{" is resolved as '{'|
-|Escap curly brackets|<h1>{{title}}</h1>|<h1>{title}}</h1>| title is not a tag, "{{" is resolved as '{' and all the '}' are kept as they are|
-|Loop|{(contries)<li>{item}</li>}|<li>Vietnam</li><li>Japan</li>| contries is an Enumerable<string>|
-|Loop|{(cities)<li>{order} - {label}: {item.Name}</li>|<li>1 - City: HCM</li><li>2 - City: Hanoi</li>| cities is an Enumerable<Data>, label is a tag, item is an element of cities|
+|Tag name|&lt;h1&gt;{title}&lt;/h1&gt;|&lt;h1&gt;Kk.Template&lt;/h1&gt;| title is a tag that is resolved as 'Kk.Template'|
+|Escape curly brackets|&lt;h1&gt;{{title}&lt;/h1&gt;|&lt;h1&gt;{title}&lt;/h1&gt;| title is not a tag, "{{" is resolved as '{'|
+|Escape curly brackets|&lt;h1&gt;{{title}}&lt;/h1&gt;|&lt;h1&gt;{title}}&lt;/h1&gt;| title is not a tag, "{{" is resolved as '{' and all the '}' are kept as they are|
+|Loop|{(contries)&lt;li&gt;{item}&lt;/li&gt;}|&lt;li&gt;Vietnam&lt;/li&gt;&lt;li&gt;Japan&lt;/li&gt;| contries is an Enumerable&lt;string&gt;|
+|Loop|{(cities)&lt;li&gt;{order} - {label}: {item.Name}&lt;/li&gt;|&lt;li&gt;1 - City: HCM&lt;/li&gt;&lt;li&gt;2 - City: Hanoi&lt;/li&gt;| cities is an Enumerable&lt;Data&gt;, label is a tag, item is an element of cities|
   
 #### Note:
   Some keywords in loop context
