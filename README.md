@@ -39,8 +39,11 @@ var result = await engine.ResolveAsync(tmpl);
   
 #### Note:
   Some keywords in loop context
+  
   1 - index (count from 0, 1, ..., n)
+  
   2 - order (count from 1, 2, ..., n)
+  
   3 - item (element of collection)
 ## Contacts
 **[LinkedIn](https://www.linkedin.com/in/linh-le-258417105/)**
