@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -155,7 +156,15 @@ namespace Kkts.Template
                 for (var i = 0; i < segments.Length; ++i)
                 {
                     var member = Expression.PropertyOrField(param, segments[i])?.Member;
-                    tmp = ((dynamic)member).GetValue(dataItem);
+                    switch (member)
+                    {
+                        case PropertyInfo p:
+                            tmp = p.GetValue(dataItem);
+                            break;
+                        case FieldInfo f:
+                            tmp = f.GetValue(dataItem);
+                            break;
+                    }
                 }
 
                 if (tmp is null) return string.Empty;
