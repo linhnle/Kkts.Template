@@ -10,7 +10,8 @@
     <RepositoryUrl>https://github.com/linhnle/Kkts.Template.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Template</PackageTags>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
+    <Description>It is a template engine for resolving simple template like SMS, emails, or any other formatted text output.</Description>
   </PropertyGroup>
 
 </Project>
