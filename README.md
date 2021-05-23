@@ -29,7 +29,7 @@ class TagResolver : ITagResolver
 var tmpl = TemplateEngine.Parse("<h1>{title}</h1><p>{des}</p>");
 var engine = new TemplateEngine(new TagResolver());
 var result = await engine.ResolveAsync(tmpl);
-// "<h1>Kk.Template</h1><p>this is flyweight template engine</p>"
+// "<h1>Kk.Template</h1><p>this is light-weight template engine</p>"
 ```
 |Description|Template|Resolved|Note|
 |-------------------|-----------------------------------|-----------------------------------|----------------|
