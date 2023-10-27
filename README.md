@@ -1,6 +1,8 @@
 # Kkts.Template
 Kkts.Template is a .Net template engine for resolving simple template like SMS, emails, or any other formatted text output.
 
+##No regular expressions
+
 get via nuget **[Kkts.Expressions](https://www.nuget.org/packages/Kkts.Template/)** 
 ### Usage
 ``` csharp
