@@ -11,62 +11,39 @@ namespace Kkts.Template
         {
             var builder = new StringBuilder();
             var isFirstChar = true;
-            var started = false;
-            for (; index < length; ++index, ++column)
+            Advance(content, ref index, ref lineCount, ref column);
+            if (index < length && content[index] == Config.StartTag)
             {
-                var c = content[index];
-                if (c == Config.StartTag && !started)
-                {
-                    started = true;
-                    continue;
-                }
-                else
-                {
-                    if (isFirstChar)
-                    {
-                        if (c == UnderScore || char.IsLetter(c))
-                        {
-                            isFirstChar = false;
-                            builder.Append(c);
-                        }
-                        else
-                        {
-                            if (c == Config.StartTag)
-                            {
-                                return new TextNode(c);
-                            }
-
-                            var nestedNode = c == Config.StartNestedTag ? new NestedExpressionNode(new NestedTagNode()) : new NestedExpressionNode(new TextNode(builder.ToString()));
-                            nestedNode.Read(content, length, ref index, ref lineCount, ref column);
-
-                            return nestedNode;
-                        }
-                    }
-                    else
-                    {
-                        if (c == UnderScore || c == Dot || char.IsLetter(c) || char.IsDigit(c))
-                        {
-                            builder.Append(c);
-                        }
-                        else
-                        {
-                            if (c == Config.EndTag)
-                            {
-                                break;
-                            }
-
-                            var nestedNode = new NestedExpressionNode(new TextNode(builder.ToString()));
-                            nestedNode.Read(content, length, ref index, ref lineCount, ref column);
-
-                            return nestedNode;
-                        }
-                    }
-                }
+                Advance(content, ref index, ref lineCount, ref column);
+                return new TextNode(Config.StartTag);
             }
 
-            Text = builder.ToString();
+            while (index < length)
+            {
+                var c = content[index];
+                var isNameChar = c == UnderScore || char.IsLetter(c) || (!isFirstChar && (c == Dot || char.IsDigit(c)));
+                if (isNameChar)
+                {
+                    isFirstChar = false;
+                    builder.Append(c);
+                    Advance(content, ref index, ref lineCount, ref column);
+                    continue;
+                }
 
-            return this;
+                if (!isFirstChar && c == Config.EndTag)
+                {
+                    Advance(content, ref index, ref lineCount, ref column);
+                    Text = builder.ToString();
+                    return this;
+                }
+
+                var nestedNode = isFirstChar && c == Config.StartNestedTag
+                    ? new NestedExpressionNode(new NestedTagNode())
+                    : new NestedExpressionNode(new TextNode(builder.ToString()));
+                return nestedNode.Read(content, length, ref index, ref lineCount, ref column);
+            }
+
+            throw SyntaxError($"Expected '{Config.EndTag}' before end of input", lineCount, column);
         }
     }
 }

@@ -16,25 +16,13 @@ namespace Kkts.Template
         {
             var builder = new StringBuilder();
             builder.Append(Text);
-            for (; index < length; ++index, ++column)
+            while (index < length)
             {
                 var c = content[index];
-                if (StopAtEndTag && c == Config.EndTag) break;
-                if (c == Config.StartTag)
-                {
-                    --index;
-                    break;
-                }
-                else
-                {
-                    if (c == Config.NewLine)
-                    {
-                        ++lineCount;
-                        column = 0;
-                    }
+                if (c == Config.StartTag || (StopAtEndTag && c == Config.EndTag)) break;
 
-                    builder.Append(c);
-                }
+                builder.Append(c);
+                Advance(content, ref index, ref lineCount, ref column);
             }
 
             Text = builder.ToString();

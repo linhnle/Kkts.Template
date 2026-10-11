@@ -5,13 +5,14 @@
     <Authors>Linh Le</Authors>
     <Company>KKTS Ltd.</Company>
     <Product>Template</Product>
+    <Copyright>Copyright (C) 2016-2026 KKTS Ltd.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/linhnle/Kkts.Template</PackageProjectUrl>
     <RepositoryUrl>https://github.com/linhnle/Kkts.Template.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>Template</PackageTags>
-    <Version>2.0.2</Version>
-    <Description>It is a template engine for resolving simple template like SMS, emails, or any other formatted text output.</Description>
+    <PackageTags>dotnet;csharp;netstandard;template-engine;text-templating;string-interpolation;email-templates;sms</PackageTags>
+    <Version>2.1.0</Version>
+    <Description>A lightweight .NET template engine for SMS, emails, and formatted text, with async tag resolution, collection loops, and culture-aware formatting.</Description>
   </PropertyGroup>
 
 </Project>

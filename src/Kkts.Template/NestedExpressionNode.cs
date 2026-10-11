@@ -10,6 +10,7 @@ namespace Kkts.Template
 
         public NestedExpressionNode(TextNode startNode)
         {
+            startNode.StopAtEndTag = true;
             _startNode = startNode;
         }
 
@@ -25,47 +26,26 @@ namespace Kkts.Template
                 NestedTagNode.Read(content, length, ref index, ref lineCount, ref column);
             }
 
-            var stack = new Stack<char>();
-            stack.Push(Config.StartTag);
-            bool ShouldBreak()
+            if (_startNode != null)
             {
-                stack.Pop();
-                return stack.Count == 0;
+                NestedNodes.Add(_startNode.Read(content, length, ref index, ref lineCount, ref column));
+                _startNode = null;
             }
 
-            for (; index < length; ++index)
+            while (index < length)
             {
-                if (_startNode != null)
+                var c = content[index];
+                if (c == Config.EndTag)
                 {
-                    NestedNodes.Add(_startNode.Read(content, length, ref index, ref lineCount, ref column));
-                    _startNode = null;
+                    Advance(content, ref index, ref lineCount, ref column);
+                    return this;
                 }
-                else
-                {
-                    var c = content[index];
-                    var isStartTag = c == Config.StartTag;
-                    var isEndTag = c == Config.EndTag;
-                    if (isStartTag)
-                    {
-                        stack.Push(Config.StartTag);
-                    }
 
-                    if (isEndTag && ShouldBreak())
-                    {
-                        break;
-                    }
-                    var node = isStartTag ? new TagNode() as TemplateNode : new TextNode() { StopAtEndTag = true };
-                    NestedNodes.Add(node.Read(content, length, ref index, ref lineCount, ref column));
-
-                    isEndTag = index < length && content[index] == Config.EndTag;
-                    if (isEndTag && ShouldBreak())
-                    {
-                        break;
-                    }
-                }
+                var node = c == Config.StartTag ? new TagNode() as TemplateNode : new TextNode() { StopAtEndTag = true };
+                NestedNodes.Add(node.Read(content, length, ref index, ref lineCount, ref column));
             }
 
-            return this;
+            throw SyntaxError($"Expected '{Config.EndTag}' before end of input", lineCount, column);
         }
     }
 }

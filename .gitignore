@@ -3,9 +3,9 @@
 ################################################################################
 
 /src/.vs/Kkts/v16
-/src/Kkts.Template/bin/Debug/netcoreapp2.0
+/src/Kkts.Template/bin
 /src/Kkts.Template/obj
-/src/Kkts.Template.UnitTest/bin/Debug/netcoreapp3.1
+/src/Kkts.Template.UnitTest/bin/Debug
 /src/Kkts.Template.UnitTest/obj
 /src/Kkts.Template/bin
-/src/Kkts.Template.UnitTest/bin/Release/netcoreapp3.1
+/src/Kkts.Template.UnitTest/bin

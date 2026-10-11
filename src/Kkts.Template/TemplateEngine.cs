@@ -24,7 +24,7 @@ namespace Kkts.Template
 
         public static Template Parse(string content)
         {
-            if (string.IsNullOrWhiteSpace(content))
+            if (string.IsNullOrEmpty(content))
             {
                 return new Template { Nodes = new List<TemplateNode>(0) };
             }
@@ -47,22 +47,12 @@ namespace Kkts.Template
             var lineCount = 1;
             var column = 1;
             var length = content.Length;
-            try
+            var index = 0;
+            while (index < length)
             {
-                for (var index = 0; index < length; ++index)
-                {
-                    var c = content[index];
-                    var node = c == Config.StartTag ? new TagNode() as TemplateNode : new TextNode();
-                    result.Add(node.Read(content, length, ref index, ref lineCount, ref column));
-                }
-            }
-            catch (FormatException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw new FormatException($"Syntax error: line {lineCount}, column {column}", ex);
+                var c = content[index];
+                var node = c == Config.StartTag ? new TagNode() as TemplateNode : new TextNode();
+                result.Add(node.Read(content, length, ref index, ref lineCount, ref column));
             }
 
             return result;
@@ -99,13 +89,13 @@ namespace Kkts.Template
                     if (tagNode.Text.StartsWith(ItemTagNamePrefix, StringComparison.OrdinalIgnoreCase))
                     {
                         if (dataItem is null) continue;
-                        value = Resolve(tagNode.Text.Substring(ItemTagNamePrefix.Length), dataItem, cultureInfo);
+                        value = Resolve(tagNode.Text, dataItem, cultureInfo);
                         builder.Append(value);
                         continue;
                     }
 
                     value = await ResolveAsync(tagNode.Text, cache, cultureInfo);
-                    builder.Append(value);
+                    builder.Append(Convert.ToString(value, cultureInfo));
                 }
                 else if (node is NestedExpressionNode nestedNode)
                 {
@@ -123,7 +113,7 @@ namespace Kkts.Template
                     }
                     else
                     {
-                        builder.Append(await ResolveTagsAsync(nestedNode.NestedNodes, 0, null, cultureInfo));
+                        builder.Append(await ResolveTagsAsync(nestedNode.NestedNodes, index, dataItem, cultureInfo));
                     }
                 }
                 else
@@ -148,33 +138,43 @@ namespace Kkts.Template
 
         private string Resolve(string tagName, object dataItem, CultureInfo cultureInfo)
         {
-            var segments = tagName.Split('.');
-            object tmp = null;
-            try
+            var segments = tagName.Substring(ItemTagNamePrefix.Length).Split('.');
+            var current = dataItem;
+            foreach (var segment in segments)
             {
-                var param = Expression.Parameter(dataItem.GetType());
-                for (var i = 0; i < segments.Length; ++i)
+                if (current is null) return string.Empty;
+
+                var receiverType = current.GetType();
+                var context = $"Cannot resolve '{tagName}': member '{segment}' on type '{receiverType.FullName}'";
+                MemberInfo member;
+                try
                 {
-                    var member = Expression.PropertyOrField(param, segments[i])?.Member;
+                    member = Expression.PropertyOrField(Expression.Parameter(receiverType), segment).Member;
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new InvalidOperationException(context, ex);
+                }
+
+                try
+                {
                     switch (member)
                     {
                         case PropertyInfo p:
-                            tmp = p.GetValue(dataItem);
+                            current = p.GetValue(current);
                             break;
                         case FieldInfo f:
-                            tmp = f.GetValue(dataItem);
+                            current = f.GetValue(current);
                             break;
                     }
                 }
-
-                if (tmp is null) return string.Empty;
-
-                return Convert.ToString(tmp, cultureInfo);
+                catch (TargetInvocationException ex) when (ex.InnerException != null)
+                {
+                    throw new InvalidOperationException(context, ex.InnerException);
+                }
             }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
+
+            return Convert.ToString(current, cultureInfo);
         }
     }
 }

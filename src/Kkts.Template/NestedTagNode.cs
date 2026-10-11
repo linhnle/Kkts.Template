@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Kkts.Template
 {
@@ -12,52 +11,29 @@ namespace Kkts.Template
         {
             var builder = new StringBuilder();
             var isFirstChar = true;
-            var started = false;
-            for (; index < length; ++index, ++column)
+            Advance(content, ref index, ref lineCount, ref column);
+            while (index < length)
             {
                 var c = content[index];
-                if (c == Config.StartNestedTag && !started)
+                if (c == UnderScore || char.IsLetter(c) || (!isFirstChar && (c == Dot || char.IsDigit(c))))
                 {
-                    started = true;
+                    isFirstChar = false;
+                    builder.Append(c);
+                    Advance(content, ref index, ref lineCount, ref column);
                     continue;
                 }
-                else
-                {
-                    if (isFirstChar)
-                    {
-                        if (c == UnderScore || char.IsLetter(c))
-                        {
-                            isFirstChar = false;
-                            builder.Append(c);
-                        }
-                        else
-                        {
-                            throw new FormatException($"Syntax error: line {lineCount}, column {column}");
-                        }
-                    }
-                    else
-                    {
-                        if (c == UnderScore || c == Dot || char.IsLetter(c) || char.IsDigit(c))
-                        {
-                            builder.Append(c);
-                        }
-                        else
-                        {
-                            if (c == Config.EndNestedTag)
-                            {
-                                ++index;
-                                break;
-                            }
 
-                            throw new FormatException($"Syntax error: line {lineCount}, column {column}");
-                        }
-                    }
+                if (!isFirstChar && c == Config.EndNestedTag)
+                {
+                    Advance(content, ref index, ref lineCount, ref column);
+                    Text = builder.ToString();
+                    return this;
                 }
+
+                throw SyntaxError($"Invalid loop selector character '{c}'", lineCount, column);
             }
 
-            Text = builder.ToString();
-
-            return this;
+            throw SyntaxError($"Expected '{Config.EndNestedTag}' before end of input", lineCount, column);
         }
     }
 }
