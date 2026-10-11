@@ -7,6 +7,7 @@
     <Product>Template</Product>
     <Copyright>Copyright (C) 2016-2026 KKTS Ltd.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/linhnle/Kkts.Template</PackageProjectUrl>
     <RepositoryUrl>https://github.com/linhnle/Kkts.Template.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
@@ -14,5 +15,9 @@
     <Version>2.1.0</Version>
     <Description>A lightweight .NET template engine for SMS, emails, and formatted text, with async tag resolution, collection loops, and culture-aware formatting.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
 
 </Project>
