@@ -1,9 +1,9 @@
-using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Kkts.Template.UnitTest
 {
-    public class UnitTest1
+    public class TemplateIntegrationTests
     {
         private static readonly string Template = @"<h1>{title}</h1>
 <p>{des}</p>
@@ -29,7 +29,7 @@ namespace Kkts.Template.UnitTest
 </table>";
 
         [Fact]
-        public async void Resolve_Success()
+        public async Task Resolve_Success()
         {
             var tmpl = TemplateEngine.Parse(Template);
             var engine = new TemplateEngine(new TagResolver());
